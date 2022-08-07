@@ -1,3 +1,12 @@
-$initialVariable = 'test'
+# Installs chocolatey if it isn't installed yet, upgrades to newest version
+function installAndUpdateChocolatey {
+    Set-ExecutionPolicy Bypass -Scope Process -Force; 
+    [System.Net.ServicePointManager]::SecurityProtocol = 
+    [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`;
 
-Write-Output $initialVariable
+    choco upgrade chocolatey;
+}
+
+installAndUpdateChocolatey;
+
