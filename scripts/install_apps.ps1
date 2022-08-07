@@ -1,18 +1,10 @@
-# Installs chocolatey if it isn't installed yet, upgrades to newest version
-function installAndUpdateChocolatey {
-    Set-ExecutionPolicy Bypass -Scope Process -Force; 
-    [System.Net.ServicePointManager]::SecurityProtocol = 
-    [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`;
-
-    choco upgrade chocolatey;
-}
-
 # Installs apps listed in json file
-function installApplicationsListedInFile {
-    $fileName = 'apps_to_install.json';
+#
+# param {string} - absolute path to json file with listed apps
+function installApps ($pathToFile) {
+    $applicationsToInstall = (Get-Content $pathToFile) | ConvertFrom-Json;
 
-    $applicationsToInstall = (Get-Content .\$fileName) | ConvertFrom-Json;
+    Write-Output "`n--- Begin installation apps ---`n";
 
     foreach ($app in $applicationsToInstall) {
         # check if there is already installed specific app in the system
@@ -38,13 +30,6 @@ function installApplicationsListedInFile {
         }
     }
     
-    
+    Write-Output "`n--- Finished installation apps --- `n";
+
 }
-
-
-Write-Output '--- Begin script.ps1 ---';
-
-# installAndUpdateChocolatey;
-installApplicationsListedInFile;
-
-Write-Output '--- Finished ---';
