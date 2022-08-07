@@ -12,7 +12,7 @@ function installAndUpdateChocolatey {
 function installApplicationsListedInFile {
     $fileName = 'apps_to_install.json';
 
-    $applicationsToInstall = (Get-Content .\$fileName) | ConvertFrom-Json
+    $applicationsToInstall = (Get-Content .\$fileName) | ConvertFrom-Json;
 
     foreach ($app in $applicationsToInstall) {
         # check if there is already installed specific app in the system
@@ -29,12 +29,12 @@ function installApplicationsListedInFile {
                 choco install $app;
 
             } else {
-                Write-Output "Chocolatey didn't find application '$app'";
+                Write-Output "Chocolatey didn't find application '$app'.";
             }
 
         } else {
             # there is already installed certain app in the system
-            Write-Output "Requested application '$app' has been found already installed in the system.";
+            Write-Output "Application '$app' has been found already installed in the system.";
         }
     }
     
@@ -42,5 +42,9 @@ function installApplicationsListedInFile {
 }
 
 
+Write-Output '--- Begin script.ps1 ---';
+
 # installAndUpdateChocolatey;
 installApplicationsListedInFile;
+
+Write-Output '--- Finished ---';
