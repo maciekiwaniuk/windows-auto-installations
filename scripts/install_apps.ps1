@@ -1,12 +1,12 @@
 # Installs apps listed in json file
 #
 # param {string} - absolute path to json file with listed apps
-function installApps ($pathToFile) {
-    $applicationsToInstall = (Get-Content $pathToFile) | ConvertFrom-Json;
+function installApps ([string]$pathToFile) {
+    $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
     Write-Output "`n--- Begin installation apps ---`n";
 
-    foreach ($app in $applicationsToInstall) {
+    foreach ($app in $applicationsArray) {
         # check if there is already installed specific app in the system
         $callback = choco find $app;
         $didntFindInstalledPackage = ($callback.Split(' ')[-3] -eq 0);
