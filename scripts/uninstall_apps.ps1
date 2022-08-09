@@ -4,15 +4,40 @@
 function uninstallApps ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
-    Write-Output "`n--- Begin uninstallation apps ---`n";
+    Write-Output "`n------------ Begin uninstallation apps ------------`n";
 
     $stringArray = getOrganisedStringAsArray($applicationsArray);
 
-    Write-Output "Are you sure that you want to uninstall follwing apps?`n$stringArray";
+    Write-Output "Are you sure that you want to uninstall follwing apps? !WARNING!`n$stringArray";
+    Write-Output "`nYou can continue or cancel";
 
-    Write-Output "`nYou can continue, kick certain or cancel (continue/kick/cancel)";
+    $choice = Read-Host "Please choose option (continue/cancel)";
 
-    $choice = Read-Host 'Please choose option';
+    if ($choice -eq "continue") {
+        #timer - 10 seconds
+        $length = 1;
+        $XSecondsFromNow = (Get-Date).AddSeconds($length);
+
+        while ((Get-Date) -lt $XSecondsFromNow) {
+            Write-Output "Uninstallation will begin in $length [Cancel -> CTRL+C]`n";
+            Start-Sleep -Seconds 1;
+            $length--;
+        }
+
+        foreach ($app in $applicationsArray) {
+            $result = (choco uninstall $app -y --remove-dependencies).Split(" ");
+            $success = (($result.Contains("successfully")) -and ($result.Contains("uninstalled")));
+
+            if ($success) {
+                Write-Output "Successfully uninstalled $app";
+            } else {
+                Write-Output "There was a problem with uninstalling $app";
+            }
+        }
+        
+    } else {
+        ./main.ps1
+    }
 }
 
 # Returns organised string that imitates array
@@ -26,7 +51,7 @@ function getOrganisedStringAsArray ([string[]]$elements) {
     if ($amountOfElements -gt 3) {
         $string = "[`n   ";
     } else {
-        $string = '[';
+        $string = "[";
     }
 
     foreach ($element in $elements) {

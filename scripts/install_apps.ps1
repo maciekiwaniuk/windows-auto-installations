@@ -4,32 +4,38 @@
 function installApps ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
-    Write-Output "`n--- Begin installation apps ---`n";
+    Write-Output "`n------------ Begin installation apps ------------`n";
+
+    $foundAppNotAvailableToInstall = $false;
+    $appsToInstall = @();
 
     foreach ($app in $applicationsArray) {
-        # check if there is already installed specific app in the system
-        $callback = choco find $app;
-        $didntFindInstalledPackage = ($callback.Split(' ')[-3] -eq 0);
-    
-        # system doesn't have installed certain app
-        if ($didntFindInstalledPackage) {
-            # check if chocolatey has exact app available to install
-            $callback = choco search $app;
-            $foundCertainAppAvailableToInstall = ($callback.Split(' ')[-3] -gt 0);
-
-            if ($foundCertainAppAvailableToInstall) {
-                choco install $app;
-
-            } else {
-                Write-Output "Chocolatey didn't find application '$app'.";
-            }
-
+        $appAvailableForInstall = (choco find $app).Length -gt 2;
+        
+        if ($appAvailableForInstall -eq $true) {
+            Write-Output "$app is available to install";
+            $appsToInstall += $app;
         } else {
-            # there is already installed certain app in the system
-            Write-Output "Application '$app' has been found already installed in the system.";
+            Write-Output "$app is not available to install";
+            $foundAppNotAvailableToInstall = $true;
         }
     }
-    
-    Write-Output "`n--- Finished installation apps --- `n";
+
+    if ($foundAppNotAvailableToInstall) {
+        Write-Output "`nIn your applications list found an application which isn't available to be downloaded.";
+        $choice = Read-Host "Do you want to continue? (yes/no)";
+
+        if (($choice -eq 'n') -or ($choice -eq 'no')) {
+            ./main.ps1
+        }
+    }
+
+    foreach ($app in $appsToInstall) {
+        Write-Output "`n------------ BEGIN INSTALLATION OF '$app' ------------";
+        choco install $app -y --acceptlicense --force;
+        Write-Output "------------ FINISHED INSTALLATION OF '$app' ------------";
+    }
+
+    Write-Output "`n------------ Finished installation apps ------------ `n";
 
 }
