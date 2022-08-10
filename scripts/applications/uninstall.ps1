@@ -1,7 +1,7 @@
 # Installs apps listed in json file
 #
 # param {string} - absolute path to json file with listed apps
-function applicationUninstall ([string]$pathToFile) {
+function applicationsUninstall ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
     Write-Output "`n------------ Begin installation apps ------------`n";

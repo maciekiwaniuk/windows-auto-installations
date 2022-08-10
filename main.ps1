@@ -6,13 +6,14 @@ Write-Output @"
     ------------ Windows auto installations ------------
 
     [1] Install chocolatey
-    [2] Upgrade chocolatey
-    [2] Install applications (required chocolatey)
-    [3] Uninstall applications (required chocolatey)
+    [2] Upgrade chocolatey (required chocolatey)
+    [3] Install applications (required chocolatey)
+    [4] Uninstall applications (required chocolatey)
+    [5] Upgrade applications (required chocolatey)
 
 "@;
 
-$choice = Read-Host "Please choose option (1/2/3)";
+$choice = Read-Host "Please choose option (1/2/3/4/5)";
 
 $fileName = "applications.json";
 $absolutePathToFile = Resolve-Path "./$fileName";
@@ -34,4 +35,8 @@ if ($choice -eq "1") {
 } elseif ($choice -eq "4") {
     . ./scripts/applications/uninstall.ps1
     applicationsUninstall($absolutePathToFile);
+
+} elseif ($choice -eq "5") {
+    . ./scripts/applications/upgrade.ps1
+    applicationsUpgrade($absolutePathToFile)
 }
