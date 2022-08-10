@@ -1,7 +1,7 @@
 # Installs apps listed in json file
 #
 # param {string} - absolute path to json file with listed apps
-function installApps ([string]$pathToFile) {
+function applicationsInstall ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
     Write-Output "`n------------ Begin installation apps ------------`n";
@@ -32,7 +32,7 @@ function installApps ([string]$pathToFile) {
 
     foreach ($app in $appsToInstall) {
         Write-Output "`n------------ BEGIN INSTALLATION OF '$app' ------------";
-        choco install $app -y --acceptlicense --force;
+        choco install $app -y --acceptlicense;
         Write-Output "------------ FINISHED INSTALLATION OF '$app' ------------";
     }
 
