@@ -1,41 +1,82 @@
-# Installs apps listed in json file
+# Uninstalls apps listed in json file
 #
 # param {string} - absolute path to json file with listed apps
 function applicationsUninstall ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
+    $stringArray = getOrganisedStringAsArray($applicationsArray);
 
-    Write-Output "`n------------ Begin installation apps ------------`n";
+    Write-Output "`n------------ Begin uninstallation apps ------------`n";
 
-    $foundAppNotAvailableToInstall = $false;
-    $appsToInstall = @();
+    Write-Output "Are you sure that you want to uninstall follwing apps? !WARNING!`n$stringArray";
+    Write-Output "`nYou can continue or cancel";
 
-    foreach ($app in $applicationsArray) {
-        $appAvailableForInstall = (choco find $app).Length -gt 2;
-        
-        if ($appAvailableForInstall -eq $true) {
-            Write-Output "$app is available to install";
-            $appsToInstall += $app;
-        } else {
-            Write-Output "$app is not available to install";
-            $foundAppNotAvailableToInstall = $true;
+    $choice = Read-Host "Please choose option (continue/cancel)";
+
+    if ($choice -eq "continue") {
+        # timer - 10 seconds
+        $length = 1;
+        $XSecondsFromNow = (Get-Date).AddSeconds($length);
+
+        while ((Get-Date) -lt $XSecondsFromNow) {
+            Write-Output "Uninstallation will begin in $length [Cancel -> CTRL+C]`n";
+            Start-Sleep -Seconds 1;
+            $length--;
         }
-    }
 
-    if ($foundAppNotAvailableToInstall) {
-        Write-Output "`nIn your applications list found an application which isn't available to be downloaded.";
-        $choice = Read-Host "Do you want to continue? (yes/no)";
-
-        if (($choice -eq 'n') -or ($choice -eq 'no')) {
-            ./main.ps1
+        foreach ($app in $applicationsArray) {
+            Write-Output "`n------------ BEGIN UNINSTALLATION OF '$app' ------------";
+            choco uninstall $app -y -n;
+            Write-Output "------------ FINISHED UNINSTALLATION OF '$app' ------------";
         }
+
+    } else {
+        ./main.ps1
     }
 
-    foreach ($app in $appsToInstall) {
-        Write-Output "`n------------ BEGIN INSTALLATION OF '$app' ------------";
-        choco install $app -y --acceptlicense;
-        Write-Output "------------ FINISHED INSTALLATION OF '$app' ------------";
-    }
-
-    Write-Output "`n------------ Finished installation apps ------------ `n";
-
+    Write-Output "`n------------ Finished uninstallation apps ------------ `n";
 }
+
+
+# Returns organised string that imitates array
+function getOrganisedStringAsArray ([string[]]$elements) {
+    $amountOfElements = $elements.Count;    
+
+    $elementsAddedToString = 0;
+    $index = 1;
+
+    # there will be more than 3 elements
+    if ($amountOfElements -gt 3) {
+        $string = "[`n   ";
+    } else {
+        $string = "[";
+    }
+
+    foreach ($element in $elements) {
+        if ($index -eq 1) {
+            $string = "$string$element";
+
+        } elseif ($amountOfElements -gt 3) {
+            # trying to add fourth element to one row
+            if ($elementsAddedToString % 3 -eq 0) {
+                $string = "$string,`n   $element";
+
+            } else {
+                $string = "$string, $element";
+            }
+
+        } else {
+            $string = "$string, $element";
+        }
+
+        $index++;
+        $elementsAddedToString++;
+    }
+
+    if ($amountOfElements -gt 3) {
+        $string = "$string`n]";
+    } else {
+        $string = "$string]";
+    }
+
+    return $string;
+} 
