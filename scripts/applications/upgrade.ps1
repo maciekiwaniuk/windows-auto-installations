@@ -4,7 +4,7 @@
 function applicationsUpgrade ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
-    Write-Output "`n------------ Begin upgrading apps ------------`n";
+    Write-Output "`n------------ Upgrading apps started ------------`n";
 
     $foundAppNotAvailableToUpgrade = $false;
     $appsToUpgrade = @();
@@ -22,10 +22,10 @@ function applicationsUpgrade ([string]$pathToFile) {
     }
 
     if ($foundAppNotAvailableToUpgrade) {
-        Write-Output "`nIn your applications list found an application which isn't available to be downloaded.";
+        Write-Output "`nIn your applications list found an application which isn't available to be upgraded.";
         $choice = Read-Host "Do you want to continue? (yes/no)";
 
-        if (($choice -eq 'n') -or ($choice -eq 'no')) {
+        if (($choice -ne 'y') -or ($choice -ne 'yes')) {
             ./main.ps1
         }
     }
@@ -36,6 +36,6 @@ function applicationsUpgrade ([string]$pathToFile) {
         Write-Output "------------ FINISHED UPGRADING OF '$app' ------------";
     }
 
-    Write-Output "`n------------ Finished upgrading apps ------------ `n";
+    Write-Output "`n------------ Upgrading apps finished ------------ `n";
 
 }

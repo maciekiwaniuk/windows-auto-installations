@@ -1,6 +1,5 @@
 Clear-Host;
 
-
 Write-Output @"
 
     ------------ Windows auto installations ------------

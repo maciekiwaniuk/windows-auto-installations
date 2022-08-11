@@ -5,7 +5,7 @@ function applicationsUninstall ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
     $stringArray = getOrganisedStringAsArray($applicationsArray);
 
-    Write-Output "`n------------ Begin uninstallation apps ------------`n";
+    Write-Output "`n------------ Uninstallation of apps started ------------`n";
 
     Write-Output "Are you sure that you want to uninstall follwing apps? !WARNING!`n$stringArray";
     Write-Output "`nYou can continue or cancel";
@@ -14,7 +14,7 @@ function applicationsUninstall ([string]$pathToFile) {
 
     if ($choice -eq "continue") {
         # timer - 10 seconds
-        $length = 1;
+        $length = 10;
         $XSecondsFromNow = (Get-Date).AddSeconds($length);
 
         while ((Get-Date) -lt $XSecondsFromNow) {
@@ -33,7 +33,7 @@ function applicationsUninstall ([string]$pathToFile) {
         ./main.ps1
     }
 
-    Write-Output "`n------------ Finished uninstallation apps ------------ `n";
+    Write-Output "`n------------ Uninstallation of apps finished ------------ `n";
 }
 
 

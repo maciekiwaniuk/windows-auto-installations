@@ -4,7 +4,7 @@
 function applicationsInstall ([string]$pathToFile) {
     $applicationsArray = (Get-Content $pathToFile) | ConvertFrom-Json;
 
-    Write-Output "`n------------ Begin installation apps ------------`n";
+    Write-Output "`n------------ Installation of apps started ------------`n";
 
     $foundAppNotAvailableToInstall = $false;
     $appsToInstall = @();
@@ -25,7 +25,7 @@ function applicationsInstall ([string]$pathToFile) {
         Write-Output "`nIn your applications list found an application which isn't available to be downloaded.";
         $choice = Read-Host "Do you want to continue? (yes/no)";
 
-        if (($choice -eq 'n') -or ($choice -eq 'no')) {
+        if (($choice -ne 'y') -or ($choice -ne 'yes')) {
             ./main.ps1
         }
     }
@@ -36,6 +36,6 @@ function applicationsInstall ([string]$pathToFile) {
         Write-Output "------------ FINISHED INSTALLATION OF '$app' ------------";
     }
 
-    Write-Output "`n------------ Finished installation apps ------------ `n";
+    Write-Output "`n------------ Installation of apps finished ------------ `n";
 
 }

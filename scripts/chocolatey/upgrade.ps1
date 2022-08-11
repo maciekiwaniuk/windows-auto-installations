@@ -1,8 +1,8 @@
 # Upgrades chocolatey
 function chocolateyUpgrade {
-    Write-Output "`n------------ Begin upgrading chocolatey ------------`n";
+    Write-Output "`n------------ Upgrading chocolatey started ------------`n";
 
     choco upgrade chocolatey;
 
-    Write-Output "`n------------ Finished upgrading chocolatey ------------`n";
+    Write-Output "`n------------ Upgrading chocolatey finished ------------`n";
 }
